@@ -17,23 +17,28 @@ const CreatePrompt = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    try {
-      const response = await fetch('/api/prompt/new', {
-        method: 'POST',
-        body: JSON.stringify({
-          prompt: post.prompt,
-          userId: session?.user.id,
-          tag: post.tag,
-        }),
-      });
+    if (session) {
+      try {
+        const response = await fetch('/api/prompt/new', {
+          method: 'POST',
+          body: JSON.stringify({
+            prompt: post.prompt,
+            userId: session?.user.id,
+            tag: post.tag,
+          }),
+        });
 
-      if (response.ok) {
-        router.push('/');
+        if (response.ok) {
+          router.push('/');
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsSubmitting(false);
       }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsSubmitting(false);
+    } else {
+      alert('You need to sign in to make a post')
+      router.push('/');
     }
   };
 
