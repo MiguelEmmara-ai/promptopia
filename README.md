@@ -46,3 +46,12 @@ Check Out The [Live Website](https://promptopia.miguelemmara.me)
 ## Full Tutorial
 
 Tutorial By JavaScript Mastery @ [YouTube Video](https://www.youtube.com/watch?v=wm5gMKuwSYk)
+
+## Assignment
+
+[] Implement Search
+<br>
+[] Implement Click on tag
+<br>
+[] Implement View other profiles
+<br>
