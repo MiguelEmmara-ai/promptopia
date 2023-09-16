@@ -16,17 +16,25 @@ const UpdatePrompt = () => {
   const [submitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    if (status === 'loading') return; // Don't fetch prompt details until the session is loaded
+    // Don't fetch prompt details until the session is loaded
+    if (status === 'loading') return;
 
     const getPromptDetails = async () => {
       try {
         const response = await fetch(`/api/prompt/${promptId}`);
         if (response.ok) {
           const data = await response.json();
-          setPost({
-            prompt: data.prompt,
-            tag: data.tag,
-          });
+
+          // Check ownership here
+          if (data.creator._id === session.user.id) {
+            setPost({
+              prompt: data.prompt,
+              tag: data.tag,
+            });
+          } else {
+            // Redirect or show an error message if not the owner
+            router.push('/');
+          }
         } else {
           console.error('Failed to fetch prompt details:', response.status);
         }
@@ -43,8 +51,14 @@ const UpdatePrompt = () => {
     setIsSubmitting(true);
 
     if (!promptId) {
-      alert('Missing PromptId!');
+      alert('Missing Prompt ID!');
       setIsSubmitting(false);
+      return;
+    }
+
+    // Check ownership before making the update request
+    if (post.creator._id !== session.user.id) {
+      router.push('/');
       return;
     }
 
