@@ -1,5 +1,3 @@
-'use client';
-
 import { useState } from 'react';
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
@@ -10,18 +8,22 @@ const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
   const pathName = usePathname();
   const router = useRouter();
 
-  const [copied, setCopied] = useState('');
+  const [copied, setCopied] = useState(false);
 
   const handleProfileClick = () => {
-    console.log(post);
-
-    if (post.creator._id === session?.user.id) return router.push('/profile');
-
-    router.push(`/profile/${post.creator._id}?name=${post.creator.username}`);
+    if (session) {
+      const isOwnProfile = session.user.id === post.creator._id;
+      const profilePath = isOwnProfile
+        ? '/profile'
+        : `/profile/${post.creator._id}?name=${post.creator.username}`;
+      router.push(profilePath);
+    } else {
+      router.push('/');
+    }
   };
 
   const handleCopy = () => {
-    setCopied(post.prompt);
+    setCopied(true);
     navigator.clipboard.writeText(post.prompt);
     setTimeout(() => setCopied(false), 3000);
   };
@@ -53,12 +55,8 @@ const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
 
         <div className='copy_btn' onClick={handleCopy}>
           <Image
-            src={
-              copied === post.prompt
-                ? '/assets/icons/tick.svg'
-                : '/assets/icons/copy.svg'
-            }
-            alt={copied === post.prompt ? 'tick_icon' : 'copy_icon'}
+            src={copied ? '/assets/icons/tick.svg' : '/assets/icons/copy.svg'}
+            alt={copied ? 'tick_icon' : 'copy_icon'}
             width={12}
             height={12}
           />
