@@ -16,6 +16,13 @@ pnpm i
 bun i
 ```
 
+Then, copy and fill out the .env file
+
+```bash
+cp .env.example .env
+nano .env
+```
+
 Then, run the development server:
 
 ```bash
